@@ -37,7 +37,7 @@
 
         <div class="flex flex-col gap-4 sm:flex-row sm:justify-start">
           <a
-            href="#"
+            href="/dashboard"
             class="inline-flex items-center justify-center rounded-full bg-[color:var(--color-accent)] px-7 py-3 text-sm font-semibold text-[color:var(--color-background)] transition hover:bg-[color:var(--color-accent)]/90"
           >
             Start Designing

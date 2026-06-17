@@ -1,4 +1,4 @@
-# ISSUE-005 - Build Premium Room.ai Hero Section
+# ISSUE-007 - Build Dashboard Page
 
 ## Priority
 
@@ -12,389 +12,409 @@ UI / UX Feature
 
 # Objective
 
-Create a premium landing page hero section for Room.ai.
+Create the main Dashboard page for Room.ai.
 
-The hero section should immediately communicate:
+The dashboard serves as the user's workspace.
 
-* AI Interior Design
-* Room Transformation
-* Before & After Visualization
-* Practical Recommendations
+Users should be able to:
 
-The hero should feel modern, elegant, minimal, and premium.
+* View previous room designs
+* Open existing projects
+* Create a new room transformation
+* Continue exploring past ideas
 
-The design should prioritize clarity and visual impact.
-
----
-
-# Important
-
-Global design tokens already exist.
-
-DO NOT create new colors.
-
-DO NOT override theme variables.
-
-Use existing CSS variables:
-
-```css
-:root {
-  --font-display: 'Fraunces', serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-
-  --color-primary: #e8dccb;
-  --color-secondary: #f5f1ea;
-  --color-accent: #2f2f2f;
-  --color-background: #fafaf8;
-  --border: #e5e5e5;
-}
-```
+The dashboard should feel like a modern creative workspace rather than a traditional admin panel.
 
 ---
 
 # Design Direction
 
-The hero should feel like a combination of:
+The dashboard should feel like a combination of:
 
-* Apple
+* Pinterest
+* Notion
 * Airbnb
-* Linear
-* Interior Design Magazine
+* Interior Design Portfolio
 
 Keywords:
 
-* Elegant
-* Spacious
+* Clean
+* Organized
 * Warm
 * Minimal
-* Premium
-* Editorial
+* Visual-first
 
 Avoid:
 
-❌ Startup gradients
+❌ Admin panel appearance
 
-❌ Neon colors
+❌ Enterprise software styling
 
-❌ Glassmorphism
+❌ Dense tables
 
-❌ Overly futuristic design
+❌ Sidebar-heavy layouts
 
-❌ Dark mode hero
+❌ Dark mode
 
-❌ Tech-looking interfaces
-
-The hero should feel closer to interior design than software.
+The focus should be the room designs.
 
 ---
 
-# Hero Structure
+# Route
 
-The existing BeforeAfterSlider should be used as the visual centerpiece.
-
-Structure:
-
-```text
-HeroSection
-
-├── BeforeAfterSlider
-├── Gradient Overlay
-└── Hero Content
+```text id="xy3r7a"
+/dashboard
 ```
 
-The room transformation must be the first thing users notice.
+---
+
+# Page Structure
+
+```text id="5t0j8k"
+Dashboard Page
+
+├── Dashboard Header
+├── Quick Actions
+├── Project Gallery
+└── Empty State
+```
+
+---
+
+# Dashboard Header
+
+## Title
+
+```text id="n5j2tx"
+My Designs
+```
+
+Use:
+
+```css id="7q85r8"
+font-family: var(--font-display);
+```
+
+Large heading.
+
+---
+
+## Description
+
+```text id="x8m14x"
+Explore previous room transformations or create a new design.
+```
+
+Use:
+
+```css id="6rj8r9"
+font-family: var(--font-body);
+```
+
+---
+
+# Primary Action
+
+Button:
+
+```text id="m7q8yp"
+New Design
+```
+
+Purpose:
+
+Navigate to:
+
+```text id="a95m8h"
+/projects/new
+```
+
+Style:
+
+Primary button.
+
+Prominent but not oversized.
 
 ---
 
 # Layout
 
-Hero Height:
-
-```css
-min-height: 100vh;
-```
-
-Content Alignment:
-
-```text
 Desktop:
-Bottom Left
 
-Mobile:
-Bottom Center
+```text id="1s38vc"
++--------------------------------------+
+| My Designs         [ New Design ]    |
++--------------------------------------+
+
++----------+----------+----------+
+| Project  | Project  | Project  |
++----------+----------+----------+
+
++----------+----------+----------+
+| Project  | Project  | Project  |
++----------+----------+----------+
 ```
-
-The image should dominate the screen.
-
-The content should support the image.
 
 ---
 
-# Hero Content
+Mobile:
 
-## Eyebrow Label
+```text id="b8d5q2"
+My Designs
 
-Small text above headline.
+[ New Design ]
+
+Project
+
+Project
+
+Project
+```
+
+Single-column layout.
+
+---
+
+# Project Gallery
+
+The gallery is the main content area.
+
+Display projects using cards.
+
+Visual-first design.
+
+Users should see room previews immediately.
+
+---
+
+# Project Card
+
+Each card represents one generated design.
+
+---
+
+## Card Structure
+
+```text id="3n4z6q"
++----------------------------------+
+|                                  |
+| Generated Room Preview           |
+|                                  |
++----------------------------------+
+
+Japanese Minimalist Workspace
+
+May 18, 2026
+
+Bedroom
+```
+
+---
+
+## Image
+
+Use:
+
+```text id="2m5q7r"
+generatedImage
+```
+
+The image should occupy most of the card.
+
+Aspect ratio:
+
+```css id="v2p8m1"
+4 / 3
+```
+
+Rounded corners.
+
+---
+
+## Project Title
 
 Example:
 
-```text
-AI-Powered Interior Design
+```text id="5k9r3p"
+Japanese Minimalist Workspace
 ```
-
-Style:
-
-* Uppercase
-* Letter spacing
-* Small font size
 
 Use:
 
-```css
-font-family: var(--font-mono);
-```
-
----
-
-# Headline
-
-Use:
-
-```text
-See Your Dream Room Before You Build It.
-```
-
-Requirements:
-
-* Large
-* Elegant
-* Emotional
-* Premium
-
-Use:
-
-```css
-font-family: var(--font-display);
-```
-
-Suggested size:
-
-```css
-clamp(3rem, 6vw, 6rem)
-```
-
-Maximum width:
-
-```css
-700px
-```
-
----
-
-# Description
-
-Use:
-
-```text
-Upload a photo of your room and let AI redesign it in seconds. Discover furniture, colors, and styling recommendations before making a single purchase.
-```
-
-Requirements:
-
-* Easy to read
-* Benefit-focused
-* Maximum width 600px
-
-Use:
-
-```css
+```css id="s8d6n5"
 font-family: var(--font-body);
-```
-
----
-
-# CTA Buttons
-
-Display two buttons.
-
-Primary:
-
-```text
-Start Designing
-```
-
-Secondary:
-
-```text
-View Examples
-```
-
-Layout:
-
-```text
-[ Start Designing ] [ View Examples ]
-```
-
-Desktop:
-
-Horizontal
-
-Mobile:
-
-Vertical
-
----
-
-# Trust Statement
-
-Display below buttons.
-
-Example:
-
-```text
-Bedroom • Workspace • Living Room
-```
-
-Purpose:
-
-Quickly communicate supported room types.
-
-Style:
-
-Small
-
-Subtle
-
-Muted color
-
----
-
-# BeforeAfterSlider
-
-Requirements:
-
-* Full-width
-* Responsive
-* High visual priority
-* Existing component must be reused
-
-Do not rebuild slider functionality.
-
-The slider should remain the centerpiece of the hero.
-
----
-
-# Gradient Overlay
-
-Purpose:
-
-Improve readability.
-
-Requirements:
-
-* Subtle
-* Elegant
-* Not too dark
-
-Example:
-
-```css
-background:
-linear-gradient(
-  to top,
-  rgba(0,0,0,.65),
-  rgba(0,0,0,.25),
-  transparent
-);
-```
-
-The room image must remain clearly visible.
-
----
-
-# Typography Rules
-
-Headline:
-
-```css
-font-family: var(--font-display);
 font-weight: 600;
 ```
 
-Description:
+---
 
-```css
-font-family: var(--font-body);
+## Metadata
+
+Example:
+
+```text id="4x6p2w"
+May 18, 2026
 ```
 
-Eyebrow:
+```text id="8z4m7n"
+Workspace
+```
 
-```css
-font-family: var(--font-mono);
+Muted appearance.
+
+---
+
+# Hover State
+
+Desktop only.
+
+Allowed:
+
+* subtle lift
+* border highlight
+* shadow-sm
+
+Avoid:
+
+❌ aggressive animations
+
+❌ glowing effects
+
+---
+
+# Empty State
+
+When user has no projects.
+
+Display:
+
+---
+
+## Illustration Placeholder
+
+Simple room illustration.
+
+Can be temporary.
+
+---
+
+## Title
+
+```text id="4v2r1t"
+No Designs Yet
 ```
 
 ---
 
-# Color Usage
+## Description
 
-Background:
-
-```css
-var(--color-background)
+```text id="0z3m6k"
+Create your first AI room transformation and start building your dream space.
 ```
 
-Primary Accent:
+---
 
-```css
+## CTA
+
+```text id="3s6y9b"
+Create First Design
+```
+
+---
+
+# Quick Actions Section
+
+Display above project gallery.
+
+---
+
+## New Design Card
+
+```text id="8q4k1d"
++ Design New Room
+```
+
+Purpose:
+
+Quickly start a new project.
+
+---
+
+## Explore Examples Card
+
+```text id="5x8m7n"
+Explore Inspirations
+```
+
+Purpose:
+
+View example transformations.
+
+Placeholder action is acceptable.
+
+---
+
+# Visual Style
+
+Use existing design tokens only.
+
+Fonts:
+
+```css id="j9q5s8"
+var(--font-display)
+var(--font-body)
+var(--font-mono)
+```
+
+Colors:
+
+```css id="3p6m2t"
 var(--color-primary)
-```
-
-Text:
-
-```css
+var(--color-secondary)
 var(--color-accent)
-```
-
-Borders:
-
-```css
+var(--color-background)
 var(--border)
 ```
 
-Do not introduce additional colors.
+Do not introduce new colors.
+
+---
+
+# Card Styling
+
+Suggested:
+
+```css id="7m4k8p"
+border: 1px solid var(--border);
+border-radius: 20px;
+overflow: hidden;
+```
+
+Padding:
+
+```css id="5n7d1q"
+24px
+```
 
 ---
 
 # Responsive Requirements
 
-Desktop
+Desktop:
 
-≥ 1024px
-
-Large editorial layout.
+3-column grid
 
 ---
 
-Tablet
+Tablet:
 
-768px - 1024px
-
-Reduce spacing.
-
-Maintain hierarchy.
+2-column grid
 
 ---
 
-Mobile
+Mobile:
 
-< 768px
-
-Content stacks naturally.
-
-Maintain readability.
-
-No horizontal scrolling.
+1-column grid
 
 ---
 
@@ -402,41 +422,56 @@ No horizontal scrolling.
 
 Requirements:
 
-✓ Proper H1 usage
+✓ Proper heading hierarchy
 
-✓ Accessible buttons
+✓ Clickable cards
 
-✓ Alt text for images
+✓ Keyboard navigation
 
-✓ Sufficient contrast
+✓ Alt text for room previews
 
-✓ Keyboard navigation support
+✓ Readable contrast
+
+---
+
+# Future Compatibility
+
+Cards should support future data:
+
+```ts id="1q8m5r"
+{
+  id: string;
+  title: string;
+  prompt: string;
+  originalImage: string;
+  generatedImage: string;
+  createdAt: string;
+}
+```
+
+Do not hardcode structure.
 
 ---
 
 # Acceptance Criteria
 
-✓ Uses existing BeforeAfterSlider
+✓ Dashboard route created
 
-✓ Uses existing design tokens
+✓ Header section implemented
 
-✓ Fraunces used for headline
+✓ New Design button visible
 
-✓ Inter used for body text
+✓ Project gallery implemented
 
-✓ JetBrains Mono used for eyebrow label
+✓ Empty state implemented
 
-✓ Full viewport hero
+✓ Responsive layout
 
-✓ Premium editorial appearance
+✓ Uses existing design system
 
-✓ Clear value proposition
+✓ Visual-first experience
 
-✓ Responsive on all screen sizes
-
-✓ Room transformation remains visual focus
-
-✓ CTA visible without scrolling
+✓ Matches Room.ai branding
 
 ---
 
@@ -444,9 +479,8 @@ Requirements:
 
 A user should immediately understand:
 
-* This product redesigns rooms using AI.
-* The transformation can be previewed before spending money.
-* The process is simple.
-* The product feels premium and trustworthy.
+* What projects they have created.
+* How to start a new design.
+* How to revisit previous transformations.
 
-The hero should feel more like a modern interior design brand than a traditional SaaS application.
+The page should feel like a personal interior design portfolio rather than a generic dashboard.
