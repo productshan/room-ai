@@ -1,4 +1,4 @@
-# ISSUE-004 - Create Premium Hero Section Content & Layout
+# ISSUE-005 - Build Premium Room.ai Hero Section
 
 ## Priority
 
@@ -12,78 +12,154 @@ UI / UX Feature
 
 # Objective
 
-Create a premium hero section for Room.ai.
+Create a premium landing page hero section for Room.ai.
 
-The hero section must immediately communicate what the product does and why it is valuable.
+The hero section should immediately communicate:
 
-A visitor should understand the product within 3-5 seconds without scrolling.
+* AI Interior Design
+* Room Transformation
+* Before & After Visualization
+* Practical Recommendations
 
-The design should feel comparable to modern award-winning websites.
+The hero should feel modern, elegant, minimal, and premium.
 
-Inspiration:
+The design should prioritize clarity and visual impact.
+
+---
+
+# Important
+
+Global design tokens already exist.
+
+DO NOT create new colors.
+
+DO NOT override theme variables.
+
+Use existing CSS variables:
+
+```css
+:root {
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-primary: #e8dccb;
+  --color-secondary: #f5f1ea;
+  --color-accent: #2f2f2f;
+  --color-background: #fafaf8;
+  --border: #e5e5e5;
+}
+```
+
+---
+
+# Design Direction
+
+The hero should feel like a combination of:
 
 * Apple
+* Airbnb
 * Linear
-* Stripe
-* Arc Browser
-* Awwwards-winning SaaS websites
+* Interior Design Magazine
 
-The experience should feel premium, modern, elegant, and trustworthy.
+Keywords:
 
----
+* Elegant
+* Spacious
+* Warm
+* Minimal
+* Premium
+* Editorial
 
-# Product Summary
+Avoid:
 
-Room.ai helps users redesign their room using AI.
+❌ Startup gradients
 
-Users:
+❌ Neon colors
 
-1. Upload a room photo
-2. Choose or describe a design style
-3. Receive an AI-generated room transformation
-4. Get furniture recommendations
-5. Get color palette suggestions
-6. Get implementation guidance
+❌ Glassmorphism
 
-The hero section should communicate this transformation process.
+❌ Overly futuristic design
 
----
+❌ Dark mode hero
 
-# Design Goal
+❌ Tech-looking interfaces
 
-The user should think:
-
-> "I can upload my room photo and instantly see what it could become."
-
-The hero should create curiosity and excitement.
-
-The room transformation must be the centerpiece of the experience.
+The hero should feel closer to interior design than software.
 
 ---
 
-# Hero Layout
+# Hero Structure
 
-The existing BeforeAfterSlider should be used as the main visual element.
-
-The slider occupies the entire hero background.
-
-Content appears as an overlay on top of the room image.
+The existing BeforeAfterSlider should be used as the visual centerpiece.
 
 Structure:
 
 ```text
-Hero Section
+HeroSection
 
-├── BeforeAfterSlider (Background)
+├── BeforeAfterSlider
 ├── Gradient Overlay
 └── Hero Content
+```
+
+The room transformation must be the first thing users notice.
+
+---
+
+# Layout
+
+Hero Height:
+
+```css
+min-height: 100vh;
+```
+
+Content Alignment:
+
+```text
+Desktop:
+Bottom Left
+
+Mobile:
+Bottom Center
+```
+
+The image should dominate the screen.
+
+The content should support the image.
+
+---
+
+# Hero Content
+
+## Eyebrow Label
+
+Small text above headline.
+
+Example:
+
+```text
+AI-Powered Interior Design
+```
+
+Style:
+
+* Uppercase
+* Letter spacing
+* Small font size
+
+Use:
+
+```css
+font-family: var(--font-mono);
 ```
 
 ---
 
 # Headline
 
-Use the following headline:
+Use:
 
 ```text
 See Your Dream Room Before You Build It.
@@ -91,174 +167,121 @@ See Your Dream Room Before You Build It.
 
 Requirements:
 
-* Large typography
-* Highly readable
-* Strong emotional impact
-* Maximum 2 lines on desktop
+* Large
+* Elegant
+* Emotional
+* Premium
+
+Use:
+
+```css
+font-family: var(--font-display);
+```
+
+Suggested size:
+
+```css
+clamp(3rem, 6vw, 6rem)
+```
+
+Maximum width:
+
+```css
+700px
+```
 
 ---
 
-# Supporting Text
+# Description
 
-Use the following description:
+Use:
 
 ```text
-Upload a photo of your room and let AI redesign it in seconds. Explore furniture, colors, and styling recommendations before spending a single dollar.
+Upload a photo of your room and let AI redesign it in seconds. Discover furniture, colors, and styling recommendations before making a single purchase.
 ```
 
 Requirements:
 
-* Easy to understand
+* Easy to read
 * Benefit-focused
-* No technical jargon
+* Maximum width 600px
+
+Use:
+
+```css
+font-family: var(--font-body);
+```
 
 ---
 
-# Primary CTA
+# CTA Buttons
 
-Button Text:
+Display two buttons.
+
+Primary:
 
 ```text
 Start Designing
 ```
 
-Purpose:
-
-Direct users to create their first room design.
-
----
-
-# Secondary CTA
-
-Button Text:
+Secondary:
 
 ```text
 View Examples
 ```
 
-Purpose:
+Layout:
 
-Allow users to explore generated room transformations.
+```text
+[ Start Designing ] [ View Examples ]
+```
+
+Desktop:
+
+Horizontal
+
+Mobile:
+
+Vertical
 
 ---
 
 # Trust Statement
 
-Display below CTA buttons.
+Display below buttons.
 
 Example:
 
 ```text
-Transform any bedroom, workspace, or living room in minutes.
+Bedroom • Workspace • Living Room
 ```
 
-Small typography.
+Purpose:
 
-Subtle appearance.
+Quickly communicate supported room types.
 
----
+Style:
 
-# Content Position
+Small
 
-Desktop:
+Subtle
 
-Bottom-left area of hero.
-
-Example:
-
-```text
-+------------------------------------------------+
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|                                                |
-|  See Your Dream Room                           |
-|  Before You Build It.                          |
-|                                                |
-|  Upload a photo of your room and let AI        |
-|  redesign it in seconds.                       |
-|                                                |
-|  [ Start Designing ] [ View Examples ]         |
-|                                                |
-|  Transform any room in minutes                 |
-|                                                |
-+------------------------------------------------+
-```
+Muted color
 
 ---
 
-# Mobile Layout
+# BeforeAfterSlider
 
-Stack content vertically.
+Requirements:
 
-Example:
+* Full-width
+* Responsive
+* High visual priority
+* Existing component must be reused
 
-```text
-Headline
+Do not rebuild slider functionality.
 
-Description
-
-Start Designing
-
-View Examples
-```
-
-Content should remain readable above the room image.
-
----
-
-# Visual Guidelines
-
-The room image is the hero.
-
-The text supports the image.
-
-Avoid:
-
-❌ Huge blocks of text
-
-❌ Marketing buzzwords
-
-❌ Generic AI terminology
-
-❌ Overly technical language
-
-❌ Excessive animations
-
-Focus on:
-
-✅ Transformation
-
-✅ Visualization
-
-✅ Inspiration
-
-✅ Simplicity
-
----
-
-# Typography
-
-Headline:
-
-* Bold
-* Premium
-* Clean
-* Large
-
-Description:
-
-* Comfortable reading width
-* Maximum width 600px
-
-CTA:
-
-* Easy to identify
-* High contrast
+The slider should remain the centerpiece of the hero.
 
 ---
 
@@ -266,11 +289,112 @@ CTA:
 
 Purpose:
 
-Improve text readability.
+Improve readability.
 
-The room image must remain visible.
+Requirements:
 
-Do not darken the image excessively.
+* Subtle
+* Elegant
+* Not too dark
+
+Example:
+
+```css
+background:
+linear-gradient(
+  to top,
+  rgba(0,0,0,.65),
+  rgba(0,0,0,.25),
+  transparent
+);
+```
+
+The room image must remain clearly visible.
+
+---
+
+# Typography Rules
+
+Headline:
+
+```css
+font-family: var(--font-display);
+font-weight: 600;
+```
+
+Description:
+
+```css
+font-family: var(--font-body);
+```
+
+Eyebrow:
+
+```css
+font-family: var(--font-mono);
+```
+
+---
+
+# Color Usage
+
+Background:
+
+```css
+var(--color-background)
+```
+
+Primary Accent:
+
+```css
+var(--color-primary)
+```
+
+Text:
+
+```css
+var(--color-accent)
+```
+
+Borders:
+
+```css
+var(--border)
+```
+
+Do not introduce additional colors.
+
+---
+
+# Responsive Requirements
+
+Desktop
+
+≥ 1024px
+
+Large editorial layout.
+
+---
+
+Tablet
+
+768px - 1024px
+
+Reduce spacing.
+
+Maintain hierarchy.
+
+---
+
+Mobile
+
+< 768px
+
+Content stacks naturally.
+
+Maintain readability.
+
+No horizontal scrolling.
 
 ---
 
@@ -278,42 +402,51 @@ Do not darken the image excessively.
 
 Requirements:
 
-* Proper heading hierarchy
-* Accessible button labels
-* Readable contrast ratios
-* Responsive typography
+✓ Proper H1 usage
+
+✓ Accessible buttons
+
+✓ Alt text for images
+
+✓ Sufficient contrast
+
+✓ Keyboard navigation support
 
 ---
 
 # Acceptance Criteria
 
-✓ BeforeAfterSlider remains the primary visual
+✓ Uses existing BeforeAfterSlider
 
-✓ Headline clearly explains value proposition
+✓ Uses existing design tokens
 
-✓ Description communicates benefits
+✓ Fraunces used for headline
 
-✓ Primary CTA visible immediately
+✓ Inter used for body text
 
-✓ Secondary CTA visible
+✓ JetBrains Mono used for eyebrow label
 
-✓ Content readable on all screen sizes
+✓ Full viewport hero
 
-✓ Premium and modern appearance
+✓ Premium editorial appearance
 
-✓ User understands product purpose within 5 seconds
+✓ Clear value proposition
 
-✓ Responsive on mobile, tablet, and desktop
+✓ Responsive on all screen sizes
+
+✓ Room transformation remains visual focus
+
+✓ CTA visible without scrolling
 
 ---
 
 # Definition Of Done
 
-A first-time visitor lands on the homepage and immediately understands:
+A user should immediately understand:
 
-1. They can upload a room photo.
-2. AI will redesign the room.
-3. They will receive actionable recommendations.
-4. They can visualize changes before spending money.
+* This product redesigns rooms using AI.
+* The transformation can be previewed before spending money.
+* The process is simple.
+* The product feels premium and trustworthy.
 
-The hero section should create enough curiosity and confidence that users want to start their first design.
+The hero should feel more like a modern interior design brand than a traditional SaaS application.
