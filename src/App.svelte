@@ -3,6 +3,7 @@
   import HeroSection from "./components/HeroSection.svelte";
   import HowItWorks from "./components/HowItWorks.svelte";
   import Dashboard from "./components/Dashboard.svelte";
+  import CreateNewDesign from "./components/CreateNewDesign.svelte";
 
   let route = "/";
 
@@ -27,6 +28,8 @@
 <main class="min-h-screen bg-[color:var(--color-background)] text-[color:var(--color-accent)]">
   {#if route === "/dashboard"}
     <Dashboard onNavigate={handleNavigate} />
+  {:else if route === "/projects/new"}
+    <CreateNewDesign onNavigate={handleNavigate} />
   {:else}
     <HeroSection />
     <HowItWorks />
