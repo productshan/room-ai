@@ -1,469 +1,229 @@
-# ISSUE-008 - Build Create New Design Page
+# ISSUE-009 - Setup Backend Architecture
 
-## Priority
+## Objective
 
-High
+Create a scalable backend foundation for Room.ai inside the existing SvelteKit application.
 
-## Type
+This issue focuses on project structure, database integration, storage integration, and service separation.
 
-UI / UX Feature
+Do NOT implement AI generation yet.
 
----
+Do NOT implement image generation yet.
 
-# Objective
-
-Create the main room transformation workflow page.
-
-This is the most important page in the application.
-
-Users should be able to:
-
-1. Upload a room photo
-2. Describe the desired style
-3. Generate an AI redesign
-4. View progress while generating
-
-The experience should feel simple, premium, and effortless.
-
-Users should never feel overwhelmed.
+Only establish architecture.
 
 ---
 
-# Route
+## Tech Stack
 
-```text id="i3p7k9"
-/projects/new
-```
+Framework:
+SvelteKit
 
----
+Database:
+Supabase
 
-# Design Direction
+Storage:
+Supabase Storage
 
-This page should feel like:
+AI:
+Gemini (future)
 
-* Uploading a photo to a creative tool
-* Midjourney
-* Arc Browser
-* Notion AI
-* Modern interior design platform
-
-Keywords:
-
-* Clean
-* Focused
-* Spacious
-* Guided
-* Premium
-
-Avoid:
-
-❌ Complex forms
-
-❌ Dashboard-like layouts
-
-❌ Too many fields
-
-❌ Technical AI terminology
-
-The goal is to make AI feel simple.
+Image Generation:
+Pollinations / OpenAI (future)
 
 ---
 
-# Page Structure
+## Folder Structure
 
-```text id="t5r8n2"
-Create Design Page
+Create:
 
-├── Page Header
-├── Upload Section
-├── Style Prompt Section
-├── Generate Button
-└── Generation Status
-```
+src/lib/server
 
----
-
-# Page Header
-
-## Eyebrow
-
-```text id="q4v9m1"
-NEW DESIGN
-```
-
-Use:
-
-```css id="k7j2s6"
-font-family: var(--font-mono);
-```
-
-Uppercase.
+src/lib/server/supabase
+src/lib/server/ai
+src/lib/server/repositories
+src/lib/server/types
+src/lib/server/schemas
 
 ---
 
-## Title
+## Create Supabase Client
 
-```text id="z8p5r3"
-Transform Your Room
-```
+File:
 
-Use:
+src/lib/server/supabase/client.ts
 
-```css id="a2n7x4"
-font-family: var(--font-display);
-```
+Responsibilities:
 
-Large and editorial.
+- Initialize Supabase
+- Export reusable client
+- Server-side only
 
 ---
 
-## Description
+## Create Project Repository
 
-```text id="m6d1k8"
-Upload a room photo and describe the style you want to achieve.
-```
+File:
 
----
+src/lib/server/repositories/project.repository.ts
 
-# Layout
+Responsibilities:
 
-Desktop:
+- Create Project
+- Get Project By ID
+- Get All Projects
+- Update Project
+- Delete Project
 
-```text id="c9t4w7"
-+------------------------------------------------+
-|                Page Header                     |
-+------------------------------------------------+
+No business logic.
 
-+----------------+------------------------------+
-|                |                              |
-| Upload Image   | Style Prompt                 |
-|                |                              |
-+----------------+------------------------------+
-
-+------------------------------------------------+
-| Generate Button                               |
-+------------------------------------------------+
-```
+Database access only.
 
 ---
 
-Mobile:
+## Create AI Service Folder
 
-```text id="v3r6y2"
-Header
+Create:
 
-Upload
+src/lib/server/ai
 
-Prompt
+Files:
 
-Generate
-```
+llm.service.ts
+image.service.ts
+prompt-builder.ts
 
-Stack vertically.
+Implementation can be empty.
 
----
-
-# Upload Section
-
-This should be the most prominent input.
+Only setup structure.
 
 ---
 
-## Upload Card
+## Create Project Types
 
-Requirements:
+File:
 
-* Drag & Drop
-* Click to Upload
-* Large upload area
-* Clear visual feedback
-
-Suggested size:
-
-```css id="n7w2p5"
-min-height: 320px;
-```
-
----
-
-## Supported Formats
-
-```text id="e4m9k1"
-JPG
-PNG
-WEBP
-```
-
----
-
-## Empty State
-
-Display:
-
-```text id="u5q7d3"
-Drag & drop your room photo
-
-or
-
-Click to browse
-```
-
----
-
-## Uploaded State
-
-Display:
-
-* Image preview
-* Replace image button
-* Remove image button
-
----
-
-# Style Prompt Section
-
-Allow users to describe the desired room style.
-
----
-
-## Textarea
-
-Placeholder:
-
-```text id="x8c4n7"
-Transform this workspace into a Japanese minimalist style with warm lighting and natural wood furniture.
-```
-
----
-
-## Character Limit
-
-```text id="p3z9r2"
-1000 characters
-```
-
-Display character count.
-
----
-
-## Helper Examples
-
-Display suggestion chips:
-
-```text id="w6k1m8"
-Japanese Minimalist
-
-Scandinavian
-
-Modern Industrial
-
-Coastal
-
-Contemporary
-```
-
-Clicking a chip should populate the textarea.
-
----
-
-# Generate Button
-
-Primary action.
-
-Text:
-
-```text id="y2v5n9"
-Generate Design
-```
-
-Requirements:
-
-* Full width on mobile
-* Prominent on desktop
-
----
-
-## Disabled State
-
-Disable button when:
-
-```text id="h7m3k6"
-No Image
-
-or
-
-No Prompt
-```
-
----
-
-# Generation Status
-
-Display only after clicking Generate.
-
----
-
-## Loading Card
-
-Display progress steps.
+src/lib/server/types/project.ts
 
 Example:
 
-```text id="j8q4w1"
-✓ Uploading Room
-
-⟳ Generating Design
-
-○ Creating Recommendations
-```
-
----
-
-## Loading Message
-
-Example:
-
-```text id="r5p9d7"
-Designing your dream space...
-```
+type ProjectStatus =
+  | "draft"
+  | "planning"
+  | "generating"
+  | "completed"
+  | "failed";
 
 ---
 
-# Future API Compatibility
+## Create Validation Schemas
 
-Prepare page to work with:
+File:
 
-```ts id="b4x8m2"
+src/lib/server/schemas/project.schema.ts
+
+Use:
+
+zod
+
+Purpose:
+
+Validate incoming requests.
+
+---
+
+## Storage Structure
+
+Create Supabase Bucket:
+
+room-ai
+
+Folder Structure:
+
+originals/
+generated/
+
+All uploaded files must follow this convention.
+
+---
+
+## Database Table
+
+projects
+
+Fields:
+
+id uuid
+
+title text
+
+style text
+
+prompt text
+
+image_prompt text
+
+status text
+
+original_image_url text
+
+generated_image_url text
+
+recommendations jsonb
+
+llm_response jsonb
+
+created_at timestamp
+
+updated_at timestamp
+
+---
+
+## API Routes
+
+Create:
+
+GET /api/projects
+
 POST /api/projects
-```
 
-Payload:
+GET /api/projects/[id]
 
-```ts id="k9t3r6"
-{
-  image: File;
-  prompt: string;
-}
-```
+PATCH /api/projects/[id]
 
-Do not hardcode mock implementation.
+DELETE /api/projects/[id]
 
-Keep architecture reusable.
+Routes may return mock data for now.
 
 ---
 
-# Visual Style
+## Acceptance Criteria
 
-Use existing design tokens.
+✓ Supabase connected
 
-Fonts:
+✓ Repository pattern established
 
-```css id="f6m2w8"
-var(--font-display)
-var(--font-body)
-var(--font-mono)
-```
+✓ Storage bucket structure defined
 
-Colors:
+✓ Types created
 
-```css id="z3k7n4"
-var(--color-primary)
-var(--color-secondary)
-var(--color-accent)
-var(--color-background)
-var(--border)
-```
+✓ Validation schemas created
 
-No additional colors.
+✓ API routes created
+
+✓ Project table schema documented
+
+✓ Ready for AI integration
 
 ---
 
-# Upload Card Styling
+## Definition Of Done
 
-Suggested:
+The backend foundation is prepared for:
 
-```css id="q1w8m5"
-border: 2px dashed var(--border);
-border-radius: 24px;
-```
+1. Room uploads
+2. AI recommendations
+3. AI image generation
+4. Dashboard project management
 
-Hover:
-
-```css id="s7d4n2"
-border-color: var(--color-primary);
-```
-
----
-
-# Accessibility
-
-Requirements:
-
-✓ Label for upload field
-
-✓ Label for textarea
-
-✓ Keyboard accessible
-
-✓ Visible focus states
-
-✓ Screen-reader friendly
-
----
-
-# Responsive Requirements
-
-Desktop:
-
-2-column layout
-
----
-
-Tablet:
-
-2-column layout with reduced spacing
-
----
-
-Mobile:
-
-Single-column layout
-
-No horizontal scrolling
-
----
-
-# Acceptance Criteria
-
-✓ Route created
-
-✓ Upload component implemented
-
-✓ Prompt textarea implemented
-
-✓ Style suggestion chips implemented
-
-✓ Generate button implemented
-
-✓ Disabled state implemented
-
-✓ Loading state implemented
-
-✓ Responsive layout
-
-✓ Uses existing design system
-
-✓ Ready for backend integration
-
----
-
-# Definition Of Done
-
-A first-time user should be able to:
-
-1. Upload a room photo.
-2. Describe a desired style.
-3. Click Generate Design.
-4. Understand that the AI is processing the request.
-
-The page should feel simple, modern, and focused on one task: transforming a room.
+without requiring future architectural changes.
