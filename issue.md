@@ -1,60 +1,173 @@
-# ISSUE-011 - Implement Project Repository & CRUD API
+# ISSUE-013 - Upload Original Room Image from Create Project Page
 
 ## Objective
 
-Build the complete backend foundation for managing Room.ai projects.
+Implement image upload functionality on the Create Project page.
 
-This issue combines:
+Users must be able to:
 
-1. Project Repository Layer
-2. Project CRUD API
+1. Select an image from their device
+2. Preview the selected image
+3. Upload the image to Supabase Storage
+4. Receive the uploaded image URL
+5. Store the image URL temporarily in the page state
+6. Use the image URL later when creating a project
 
-After this issue is completed, the application must be able to:
+This issue focuses ONLY on image upload.
 
-- Create projects
-- Retrieve projects
-- Update projects
-- Delete projects
+Do NOT create projects yet.
 
-No AI integration yet.
+Do NOT call Gemini.
 
-No image upload yet.
-
-Focus only on project management and database interaction.
+Do NOT generate AI images.
 
 ---
 
-# Database
+# Background
 
-Table:
+Supabase bucket already exists:
 
-projects
+room-ai
 
-Expected schema:
+Folder structure:
 
-```sql
-id uuid primary key
+originals/
+generated/
 
-title text
+This issue only uploads files into:
 
-style text
+originals/
 
-prompt text
+---
 
-image_prompt text
+# User Flow
 
-status text
+User opens:
 
-original_image_url text
+/projects/new
 
-generated_image_url text
+↓
 
-recommendations jsonb
+Select image
 
-llm_response jsonb
+↓
 
-generation_count integer
+Image preview appears
 
-created_at timestamptz
+↓
 
-updated_at timestamptz
+Click Upload
+
+↓
+
+Image uploaded to Supabase
+
+↓
+
+Receive public URL
+
+↓
+
+Store URL in page state
+
+↓
+
+Ready for future project creation
+
+---
+
+# Task 1 - Create Upload Section
+
+Page:
+
+src/routes/projects/new/+page.svelte
+
+Add:
+
+- File picker
+- Upload button
+- Upload status
+- Image preview
+
+Layout should match existing Room.ai design system.
+
+Style requirements:
+
+- Clean
+- Minimal
+- Interior-focused
+- Consistent with current typography and colors
+
+---
+
+# Task 2 - File Selection
+
+Allow:
+
+image/jpeg
+image/png
+image/webp
+
+When file selected:
+
+Show preview immediately.
+
+Use browser preview only.
+
+Do not upload automatically.
+
+---
+
+# Task 3 - Upload Trigger
+
+User must explicitly click:
+
+Upload Image
+
+Button.
+
+Upload should call:
+
+POST /api/uploads
+
+Using:
+
+FormData
+
+Example:
+
+image -> selected file
+
+---
+
+# Task 4 - Loading State
+
+While uploading:
+
+- Disable upload button
+- Show loading indicator
+
+Example:
+
+Uploading...
+
+Prevent duplicate uploads.
+
+---
+
+# Task 5 - Success State
+
+When upload succeeds:
+
+Display:
+
+- Success message
+- Uploaded image preview
+
+Store response:
+
+```ts
+{
+  path: string;
+  url: string;
+}

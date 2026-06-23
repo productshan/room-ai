@@ -31,9 +31,11 @@ export async function POST({ request }) {
       );
     }
 
+    console.error('Error creating project:', error);
+
     return json(
       {
-        error: error instanceof Error ? error.message : 'Failed to create project.'
+        error: error
       },
       { status: 500 }
     );

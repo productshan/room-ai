@@ -1,10 +1,21 @@
 <script>
+  import { uploadImage } from '$lib/client/upload.api';
+  import { createProject } from '$lib/client/project.api';
+
   export let onNavigate;
 
   let imageFile = null;
   let imageUrl = "";
   let prompt = "";
+  let uploadResult = null;
+  let selectedStyleId = null;
+  
+  let generatedProcess = null;
   let isGenerating = false;
+  let uploadStatus = 'idle';
+  let isUploading = false;
+  let uploadError = "";
+
   let statusSteps = [
     { label: "Uploading Room", state: "pending" },
     { label: "Generating Design", state: "pending" },
@@ -12,12 +23,11 @@
   ];
   let statusMessage = "";
   let chipSuggestions = [
-    "Japanese Minimalist",
-    "Scandinavian",
-    "Modern Industrial",
-    "Coastal",
-    "Contemporary"
-  ];
+    {'title': 'Japanese Minimalist', id: 1}, 
+    {'title': 'Scandinavian Cozy', id: 2}, 
+    {'title': 'Mid-Century Modern', id: 3}, 
+    {'title': 'Industrial Chic', id: 4}, 
+    {'title': 'Bohemian Eclectic', id: 5}];
 
   const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
@@ -43,18 +53,48 @@
   function setImage(file) {
     imageFile = file;
     imageUrl = URL.createObjectURL(file);
+    uploadResult = null;
+    uploadStatus = 'idle';
+    uploadError = "";
   }
 
   function removeImage() {
     imageFile = null;
     imageUrl = "";
+    uploadResult = null;
+    uploadStatus = 'idle';
+    uploadError = "";
     statusSteps = statusSteps.map((step) => ({ ...step, state: "pending" }));
     statusMessage = "";
     isGenerating = false;
+    isUploading = false;
   }
 
   function chooseChip(value) {
-    prompt = value;
+    prompt = `Transform this space into a ${chipSuggestions.find(chip => chip.id === value)?.title || 'stylish design'} style.`;
+    selectedStyleId = value;
+  }
+
+  async function handleUpload() {
+    if (!imageFile) return;
+
+    uploadStatus = 'uploading';
+    uploadError = "";
+    uploadResult = null;
+    isUploading = true;
+
+    try {
+      const result = await uploadImage(imageFile);
+      uploadResult = result;
+      uploadStatus = 'success';
+      statusMessage = 'Image uploaded successfully.';
+    } catch (error) {
+      uploadStatus = 'error';
+      uploadError = error instanceof Error ? error.message : 'Upload failed.';
+      statusMessage = 'Image upload failed.';
+    } finally {
+      isUploading = false;
+    }
   }
 
   function resetStatus() {
@@ -87,6 +127,27 @@
       isGenerating = false;
     }, 2400);
   }
+
+  async function createProjectFromDesign() {
+    if (!uploadResult) return;
+
+    try {
+      const projectData = {
+        title:'Untitled Design',
+        style:'Unknown Style',
+        prompt: prompt,
+        status: 'draft',
+        image_prompt: prompt,
+        original_image_url: uploadResult.url,
+      };
+
+      const newProject = await createProject(projectData);
+      generatedProcess = newProject;
+    } catch (error) {
+      generatedProcess = error;
+    }
+  }
+
 </script>
 
 <section class="min-h-screen px-6 py-16 sm:px-8 lg:px-10 xl:px-0">
@@ -166,6 +227,39 @@
           />
         </div>
 
+        {#if imageFile}
+          <div class="rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--color-background)] p-8">
+            <div class="flex flex-col gap-4">
+              <button
+                type="button"
+                class="inline-flex w-full items-center justify-center rounded-full bg-[color:var(--color-accent)] px-6 py-4 text-sm font-semibold text-[color:var(--color-background)] transition disabled:cursor-not-allowed disabled:opacity-60 hover:bg-[color:var(--color-accent)]/90"
+                on:click={handleUpload}
+                disabled={isUploading}
+              >
+                {#if isUploading}
+                  Uploading...
+                {:else if uploadStatus === 'success'}
+                  Uploaded
+                {:else}
+                  Upload Image
+                {/if}
+              </button>
+
+              {#if uploadStatus === 'success' && uploadResult}
+                <div class="rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--color-background)] p-4">
+                  <p class="text-sm font-semibold text-[color:var(--color-accent)]">Upload complete</p>
+                  <p class="mt-2 text-sm text-[color:rgba(47,47,47,0.78)]">Image uploaded to Supabase originals folder.</p>
+                  <a href={uploadResult.url} target="_blank" rel="noreferrer" class="mt-3 block truncate text-sm text-[color:var(--color-accent)] underline">
+                    {uploadResult.url}
+                  </a>
+                </div>
+              {:else if uploadStatus === 'error'}
+                <p class="text-sm font-semibold text-red-600">{uploadError}</p>
+              {/if}
+            </div>
+          </div>
+        {/if}
+
         <div class="rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--color-background)] p-8">
           <p class="font-mono text-xs uppercase tracking-[0.28em] text-[color:rgba(47,47,47,0.55)]">Style Prompt</p>
           <textarea
@@ -179,10 +273,10 @@
               {#each chipSuggestions as chip}
                 <button
                   type="button"
-                  class="rounded-full border border-[color:var(--border)] bg-[color:var(--color-background)] px-4 py-2 text-sm font-semibold text-[color:var(--color-accent)] transition hover:border-[color:var(--color-accent)] hover:bg-[color:var(--color-primary)]/10"
-                  on:click={() => chooseChip(chip)}
+                  class={`rounded-full border px-4 py-2 text-sm font-semibold ${selectedStyleId === chip.id ? 'bg-red-100' : ''}`}
+                  on:click={() => chooseChip(chip.id)}
                 >
-                  {chip}
+                  {chip.title}
                 </button>
               {/each}
             </div>
@@ -200,14 +294,14 @@
           <button
             type="button"
             class="mt-8 w-full rounded-full bg-[color:var(--color-accent)] px-6 py-4 text-sm font-semibold text-[color:var(--color-background)] transition disabled:cursor-not-allowed disabled:opacity-60 hover:bg-[color:var(--color-accent)]/90"
-            on:click={handleGenerate}
+            on:click={createProjectFromDesign}
             disabled={!imageFile || !prompt.trim() || isGenerating}
           >
-            Generate Design
+            Generate Design + {generatedProcess}
           </button>
         </div>
 
-        {#if isGenerating || statusMessage}
+          {#if isGenerating || statusMessage}
           <div class="rounded-[1.5rem] border border-[color:var(--border)] bg-[color:var(--color-background)] p-8">
             <p class="font-mono text-xs uppercase tracking-[0.28em] text-[color:rgba(47,47,47,0.55)]">Generation Status</p>
             <div class="mt-6 space-y-6">
