@@ -1,13 +1,21 @@
 import type { Project } from "../types/project";
-import { supabaseClient } from "../supabase/client";
+import { supabaseAdmin } from "../supabase/admin";
+import type { ProjectCreateInput, ProjectUpdateInput } from "../schemas/project.schema";
 
 const tableName = "projects";
 
-export async function createProject(
-  project: Omit<Project, "id" | "created_at" | "updated_at">
-) {
-  const { data, error } = await supabaseClient
-    .from<Project>(tableName)
+function requireClient() {
+  if (!supabaseAdmin) {
+    throw new Error("Supabase client is not initialized.");
+  }
+
+  return supabaseAdmin;
+}
+
+export async function createProject(project: ProjectCreateInput) {
+  const client = requireClient();
+  const { data, error } = await client
+    .from(tableName)
     .insert(project)
     .select()
     .single();
@@ -16,38 +24,41 @@ export async function createProject(
     throw error;
   }
 
-  return data;
+  return data as Project | null;
 }
 
 export async function getProjectById(id: string) {
-  const { data, error } = await supabaseClient
-    .from<Project>(tableName)
+  const client = requireClient();
+  const { data, error } = await client
+    .from(tableName)
     .select("*")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
   if (error) {
     throw error;
   }
 
-  return data;
+  return data as Project | null;
 }
 
 export async function getAllProjects() {
-  const { data, error } = await supabaseClient
-    .from<Project>(tableName)
+  const client = requireClient();
+  const { data, error } = await client
+    .from(tableName)
     .select("*");
 
   if (error) {
     throw error;
   }
 
-  return data ?? [];
+  return (data as Project[] | null) ?? [];
 }
 
-export async function updateProject(id: string, updates: Partial<Project>) {
-  const { data, error } = await supabaseClient
-    .from<Project>(tableName)
+export async function updateProject(id: string, updates: ProjectUpdateInput) {
+  const client = requireClient();
+  const { data, error } = await client
+    .from(tableName)
     .update(updates)
     .eq("id", id)
     .select()
@@ -57,12 +68,13 @@ export async function updateProject(id: string, updates: Partial<Project>) {
     throw error;
   }
 
-  return data;
+  return data as Project | null;
 }
 
 export async function deleteProject(id: string) {
-  const { error } = await supabaseClient
-    .from<Project>(tableName)
+  const client = requireClient();
+  const { error } = await client
+    .from(tableName)
     .delete()
     .eq("id", id);
 
