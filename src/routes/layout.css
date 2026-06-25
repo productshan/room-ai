@@ -1,3 +1,42 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+html {
+	scroll-behavior: smooth;
+}
+
+:root {
+	--font-display: 'Fraunces', serif;
+	--font-body: 'Inter', sans-serif;
+	--font-mono: 'JetBrains Mono', monospace;
+	--color-primary: #e8dccb;
+	--color-secondary: #f5f1ea;
+	--color-accent: #2f2f2f;
+	--color-background: #fafaf8;
+	--border: #e5e5e5;
+}
+
+@layer utilities {
+	.font-display {
+		font-family: var(--font-display);
+	}
+
+	.font-body {
+		font-family: var(--font-body);
+	}
+
+	.font-mono {
+		font-family: var(--font-mono);
+	}
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	background: var(--color-background);
+	color: var(--color-accent);
+	font-family: var(--font-body);
+	overflow-x: hidden;
+}

@@ -2,6 +2,7 @@ import { json } from '@sveltejs/kit';
 import { ZodError } from 'zod';
 import { ProjectCreateSchema } from '$lib/server/schemas/project.schema';
 import { createProject, getAllProjects } from '$lib/server/repositories';
+import { generateTextFromPrompt } from '$lib/server/ai/llm.service';
 
 export async function GET() {
   try {
@@ -21,7 +22,8 @@ export async function POST({ request }) {
   try {
     const payload = await request.json();
     const project = ProjectCreateSchema.parse(payload);
-    const createdProject = await createProject(project);
+    const llmResponse = await generateTextFromPrompt(project.prompt, project.original_image_url || '');
+    const createdProject = await createProject({ ...project, llm_response: llmResponse.text });
     return json(createdProject, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {

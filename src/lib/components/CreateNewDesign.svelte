@@ -10,7 +10,10 @@
   let uploadResult = null;
   let selectedStyleId = null;
   
-  let generatedProcess = null;
+  let generatedProcess = {
+    error: null,
+    success: null,
+  };
   let isGenerating = false;
   let uploadStatus = 'idle';
   let isUploading = false;
@@ -142,9 +145,9 @@
       };
 
       const newProject = await createProject(projectData);
-      generatedProcess = newProject;
+      generatedProcess = {...generatedProcess, success: newProject};
     } catch (error) {
-      generatedProcess = error;
+      generatedProcess = {...generatedProcess, error: error.error};
     }
   }
 
@@ -297,7 +300,7 @@
             on:click={createProjectFromDesign}
             disabled={!imageFile || !prompt.trim() || isGenerating}
           >
-            Generate Design + {generatedProcess}
+            Generate Design + {generatedProcess.error }
           </button>
         </div>
 
