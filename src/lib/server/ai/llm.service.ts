@@ -31,13 +31,54 @@ export async function generateTextFromPrompt(prompt: string, imageUrl: string) {
 	],
 	"furniture": [	
 		"name": string,
-    	"image_url": string,
+    	"image_url": string,jadi
     	"url_to_buy": string,
     	"price": string
 	}],
 	"improvements": string[],
 	"image_prompt": string
-	}`;
+	}
+	
+	Use the provided reference room image as the primary source of truth for generating prompt for image generation.
+
+	IMPORTANT PRESERVATION RULES:
+
+	- Preserve the original room layout.
+	- Preserve room dimensions and proportions.
+	- Preserve wall locations.
+	- Preserve window locations.
+	- Preserve door locations.
+	- Preserve ceiling height.
+	- Preserve camera angle and perspective.
+	- Preserve the overall architectural structure.
+	- Do not redesign the room from scratch.
+	- Do not change the room size.
+
+	DESIGN STYLE:
+	Japanese Minimalist
+
+	COLOR PALETTE:
+	- Warm White
+	- Light Oak
+	- Charcoal Gray
+
+	RECOMMENDED FURNITURE:
+	- Light Oak Desk
+	- Ergonomic Chair
+	- Floating Shelf
+
+	IMPLEMENTATION NOTES:
+	- Remove unnecessary decorations
+	- Use indirect warm lighting
+
+	Apply the recommended furniture and colors while keeping the original room structure intact.
+
+	The final image must look like the same room after renovation.
+
+	Photorealistic interior design.
+	Same room before and after.
+	
+	`;
 
 	const response = await fetch(
 		`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent`,

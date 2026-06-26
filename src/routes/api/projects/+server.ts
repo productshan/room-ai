@@ -3,6 +3,7 @@ import { ZodError } from 'zod';
 import { ProjectCreateSchema } from '$lib/server/schemas/project.schema';
 import { createProject, getAllProjects } from '$lib/server/repositories';
 import { generateTextFromPrompt } from '$lib/server/ai/llm.service';
+import { generateImage } from '$lib/server/ai/image.service.js';
 
 export async function GET() {
   try {
@@ -23,7 +24,8 @@ export async function POST({ request }) {
     const payload = await request.json();
     const project = ProjectCreateSchema.parse(payload);
     const llmResponse = await generateTextFromPrompt(project.prompt, project.original_image_url || '');
-    const createdProject = await createProject({ ...project, llm_response: llmResponse.text });
+    const imageGen = await generateImage(llmResponse.text.style, llmResponse.text.furniture, llmResponse.text.color_palette, llmResponse.text.improvements, project.original_image_url)
+    const createdProject = await createProject({ ...project, llm_response: llmResponse.text, recommendations: imageGen });
     return json(createdProject, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
