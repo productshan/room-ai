@@ -10,8 +10,11 @@
 		projects = res.data;
 	});
 
-  let selectedProjectId = null;
+	let selectedProjectId = null;
+	let selectedProject = null;
+	let selectedProjectDetails = null;
 	let showDeleteModal = false;
+	let showDetailModal = false;
 
 	async function handleDelete(projectId) {
 		try {
@@ -22,17 +25,87 @@
 		}
 	}
 
-  async function modalDeleteHandler(projectId) {
-    selectedProjectId = projectId;
-    showDeleteModal = true;
-  }
+	function modalDetailHandler(projectId) {
+		selectedProjectId = projectId;
+		selectedProject = projects.find((p) => p.id === projectId);
+		selectedProjectDetails = selectedProject.llm_response;
+		console.log('Detail button clicked for project ID:', selectedProject);
+		showDetailModal = true;
+	}
 
+	function modalDeleteHandler(projectId) {
+		selectedProjectId = projectId;
+		showDeleteModal = true;
+	}
 </script>
-  
-<div class={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${showDeleteModal ? '' : 'hidden'}`}>
+
+<div
+	class={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 overflow-scroll ${showDetailModal ? '' : 'hidden'}`}
+>
+	<div class="bg-white rounded-lg p-6 shadow-lg">
+		<h2 class="text-lg font-semibold mb-4">Project Details</h2>
+		{#if selectedProject}
+			<p class="mb-4">Name: {selectedProject.name}</p>
+			<div class="flex flex-col gap-2">
+				<p>Style: {selectedProjectDetails.style}</p>
+				<div class="flex flex-row">
+					<p>Color Pallete:</p>
+					<div class="ml-4">
+						{#each selectedProjectDetails.color_palette as item}
+							<div class="flex items-center gap-2">
+								<div class="w-8 h-8 rounded border" style:background-color={item.hex_code}></div>
+
+								<div>
+									<p>{item.name}</p>
+									<p class="text-xs text-muted-foreground">
+										{item.hex_code}
+									</p>
+								</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+				<div class="flex flex-row">
+					<p>Furniture:</p>
+					<div class="ml-4">
+						{#each selectedProjectDetails.furniture as item}
+							<p>- {item.name}</p>
+							<p>- {item.image_url}</p>
+							<p>- {item.url_to_buy}</p>
+							<p>- {item.price}</p>
+						{/each}
+					</div>
+				</div>
+				<div class="flex flex-row">
+					<p>Improvements:</p>
+					<div class="ml-4">
+						{#each selectedProjectDetails.improvements as improvement}
+							<p>- {improvement}</p>
+						{/each}
+					</div>
+				</div>
+				<p>Image Prompt: {selectedProjectDetails.image_prompt}</p>
+			</div>
+		{/if}
+		<div class="flex justify-end gap-4">
+			<button
+				class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+				on:click={() => (showDetailModal = false)}
+			>
+				Close
+			</button>
+		</div>
+	</div>
+</div>
+
+<div
+	class={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${showDeleteModal ? '' : 'hidden'}`}
+>
 	<div class="bg-white rounded-lg p-6 shadow-lg">
 		<h2 class="text-lg font-semibold mb-4">Confirm Deletion</h2>
-		<p class="mb-4">Are you sure you want to delete this project? This action cannot be undone. {selectedProjectId} </p>
+		<p class="mb-4">
+			Are you sure you want to delete this project? This action cannot be undone. {selectedProjectId}
+		</p>
 		<div class="flex justify-end gap-4">
 			<button
 				class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
@@ -127,6 +200,13 @@
 									<h3 class="font-body text-lg font-semibold text-[color:var(--color-accent)]">
 										{project.title}
 									</h3>
+									<button
+										type="button"
+										class="text-red-500 hover:text-red-700"
+										on:click={() => modalDetailHandler(project.id)}
+									>
+										Detail
+									</button>
 									<button
 										type="button"
 										class="text-red-500 hover:text-red-700"
