@@ -23,9 +23,7 @@ export async function POST({ request }) {
   try {
     const payload = await request.json();
     const project = ProjectCreateSchema.parse(payload);
-    const llmResponse = await generateTextFromPrompt(project.prompt, project.original_image_url || '');
-    const imageGen = await generateImage(llmResponse.text.style, llmResponse.text.furniture, llmResponse.text.color_palette, llmResponse.text.improvements, project.original_image_url)
-    const createdProject = await createProject({ ...project, llm_response: llmResponse.text, recommendations: imageGen });
+    const createdProject = await createProject(project);
     return json(createdProject, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {

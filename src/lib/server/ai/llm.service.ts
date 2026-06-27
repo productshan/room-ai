@@ -128,8 +128,5 @@ export async function generateTextFromPrompt(prompt: string, imageUrl: string) {
 		);
 		throw errorMessage;
 	}
-	return {
-		text: llm_response,
-		timestamp: new Date().toISOString()
-	};
+	return llm_response
 }
