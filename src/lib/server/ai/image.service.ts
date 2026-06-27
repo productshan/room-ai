@@ -4,12 +4,15 @@ import { supabaseAdmin } from '$lib/server/supabase/admin';
 import { SUPABASE_BUCKET, formatStoragePath } from '$lib/server/supabase/storage';
 
 export async function generateImage(
-	style: string,
-	furnitures: string[],
-	colors: string[],
-	improvements: string[],
+	llmRecommendations: any,
 	orginal_image_ref: string
 ) {
+  let recommendations = {
+    style: llmRecommendations.style,
+    furnitures:llmRecommendations.furnitures,
+    colors: llmRecommendations.colors,
+    improvements: llmRecommendations.improvements
+  }
 	let prompt = `
   Use the provided reference room image as the primary source of truth.
 
@@ -55,16 +58,16 @@ export async function generateImage(
   - Do not generate a new floor plan.
 
   DESIGN STYLE:
-  ${style}
+  ${recommendations.style}
 
   COLOR PALETTE:
-  ${colors}
+  ${recommendations.colors}
 
   RECOMMENDED FURNITURE:
-  ${furnitures}
+  ${recommendations.furnitures}
 
   IMPLEMENTATION NOTES:
-  ${improvements}
+  ${recommendations.improvements}
 
   Only modify:
   - furniture

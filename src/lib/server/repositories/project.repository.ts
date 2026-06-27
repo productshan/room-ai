@@ -1,16 +1,8 @@
 import type { Project } from "../types/project";
-import { supabaseAdmin } from "../supabase/admin";
 import type { ProjectCreateInput, ProjectUpdateInput } from "../schemas/project.schema";
+import { requireClient } from "./helper";
 
 const tableName = "projects";
-
-function requireClient() {
-  if (!supabaseAdmin) {
-    throw new Error("Supabase client is not initialized.");
-  }
-
-  return supabaseAdmin;
-}
 
 export async function createProject(project: ProjectCreateInput) {
   const client = requireClient();
