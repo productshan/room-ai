@@ -10,14 +10,9 @@ export const ProjectStatusSchema = z.enum([
 
 export const ProjectCreateSchema = z.object({
 	title: z.string().min(1),
-	style: z.string().min(1),
-	prompt: z.string().min(1),
-	image_prompt: z.string().min(1),
 	status: ProjectStatusSchema,
 	original_image_url: z.string().url().nullable().optional(),
-	generated_image_url: z.string().url().nullable().optional(),
-	recommendations: z.record(z.unknown()).nullable().optional(),
-	llm_response: z.record(z.unknown()).nullable().optional()
+	user_id: z.string().uuid().nullable().optional()
 });
 
 export const ProjectUpdateSchema = ProjectCreateSchema.partial();

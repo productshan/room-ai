@@ -1,173 +1,112 @@
-# ISSUE-013 - Upload Original Room Image from Create Project Page
+Issue #014 - Integrate User Profile with Supabase Auth
+Objective
 
-## Objective
+Integrate Supabase Authentication with the application's Profile module so every authenticated user has a corresponding profile record that can be retrieved and updated through the backend API.
 
-Implement image upload functionality on the Create Project page.
+Background
 
-Users must be able to:
+The project already uses Supabase as its backend.
 
-1. Select an image from their device
-2. Preview the selected image
-3. Upload the image to Supabase Storage
-4. Receive the uploaded image URL
-5. Store the image URL temporarily in the page state
-6. Use the image URL later when creating a project
+User authentication will be handled by Supabase Auth, while application-specific user information will be stored in the profiles table.
 
-This issue focuses ONLY on image upload.
+The backend must treat profiles as the application's user entity.
 
-Do NOT create projects yet.
+Scope
+Database
+Create profiles table migration.
+Create trigger to automatically insert a profile after successful user registration.
+Add RLS policies so users can only access their own profile.
+Backend
 
-Do NOT call Gemini.
+Implement:
 
-Do NOT generate AI images.
+Profile Schema
+Profile Repository
+Profile Service
+Profile API
+Repository
 
----
+Implement methods:
 
-# Background
+getProfileById(userId)
 
-Supabase bucket already exists:
+updateProfile(userId, payload)
+Service
 
-room-ai
+Implement business logic:
 
-Folder structure:
+getCurrentProfile()
 
-originals/
-generated/
+updateCurrentProfile()
+API
 
-This issue only uploads files into:
+Create endpoint:
 
-originals/
+GET /api/profile
 
----
+Returns:
 
-# User Flow
-
-User opens:
-
-/projects/new
-
-↓
-
-Select image
-
-↓
-
-Image preview appears
-
-↓
-
-Click Upload
-
-↓
-
-Image uploaded to Supabase
-
-↓
-
-Receive public URL
-
-↓
-
-Store URL in page state
-
-↓
-
-Ready for future project creation
-
----
-
-# Task 1 - Create Upload Section
-
-Page:
-
-src/routes/projects/new/+page.svelte
-
-Add:
-
-- File picker
-- Upload button
-- Upload status
-- Image preview
-
-Layout should match existing Room.ai design system.
-
-Style requirements:
-
-- Clean
-- Minimal
-- Interior-focused
-- Consistent with current typography and colors
-
----
-
-# Task 2 - File Selection
-
-Allow:
-
-image/jpeg
-image/png
-image/webp
-
-When file selected:
-
-Show preview immediately.
-
-Use browser preview only.
-
-Do not upload automatically.
-
----
-
-# Task 3 - Upload Trigger
-
-User must explicitly click:
-
-Upload Image
-
-Button.
-
-Upload should call:
-
-POST /api/uploads
-
-Using:
-
-FormData
-
-Example:
-
-image -> selected file
-
----
-
-# Task 4 - Loading State
-
-While uploading:
-
-- Disable upload button
-- Show loading indicator
-
-Example:
-
-Uploading...
-
-Prevent duplicate uploads.
-
----
-
-# Task 5 - Success State
-
-When upload succeeds:
-
-Display:
-
-- Success message
-- Uploaded image preview
-
-Store response:
-
-```ts
 {
-  path: string;
-  url: string;
+  "id": "...",
+  "username": "...",
+  "full_name": "...",
+  "avatar_url": "..."
 }
+
+Create endpoint:
+
+PATCH /api/profile
+
+Request:
+
+{
+  "username": "...",
+  "full_name": "...",
+  "avatar_url": "..."
+}
+Validation
+
+Create Zod schema for:
+
+ProfileSchema
+ProfileUpdateSchema
+
+Validate:
+
+username
+full_name
+avatar_url
+Authentication
+
+Every API request must:
+
+Read authenticated user from Supabase Auth session.
+Reject unauthenticated requests.
+Never allow clients to specify another user's ID.
+Error Handling
+
+Return appropriate HTTP status codes:
+
+200 OK
+400 Bad Request
+401 Unauthorized
+404 Not Found
+500 Internal Server Error
+Acceptance Criteria
+✅ User registration automatically creates a profile.
+✅ Authenticated users can retrieve their own profile.
+✅ Users can update their own profile.
+✅ Users cannot access or update another user's profile.
+✅ Repository, Service, Schema, and API follow the existing project architecture.
+✅ Input validation uses Zod.
+✅ Database access is performed only through Repository.
+✅ No business logic exists inside API route handlers.
+Out of Scope
+Google Login
+GitHub Login
+Password Reset
+Email Verification UI
+Admin dashboard
+User search
+Public profile pages
+Role & permission management

@@ -5,28 +5,20 @@ import {
   getAllProjects,
   getProjectById,
   updateProject
-} from './project.repository';
+} from '../project.repository';
 
 describe('project repository', () => {
   it('can create, read, update, and delete a project', async () => {
     const payload = {
       title: 'Test Project',
-      style: 'Minimal',
-      prompt: 'Test prompt content',
-      image_prompt: 'Minimal room with warm textures',
       status: 'draft',
       original_image_url: null,
-      generated_image_url: null,
-      recommendations: null,
-      llm_response: null
+      user_id: null
     };
 
     const created = await createProject(payload);
     expect(created).toMatchObject({
       title: 'Test Project',
-      style: 'Minimal',
-      prompt: 'Test prompt content',
-      image_prompt: 'Minimal room with warm textures',
       status: 'draft'
     });
     expect(created?.id).toBeTruthy();
