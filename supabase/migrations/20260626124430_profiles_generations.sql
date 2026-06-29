@@ -13,4 +13,4 @@ create table generations (
     generated_image_url text,
     status text default 'pending',
     created_at timestamptz default now()
-);
+);oke oke
